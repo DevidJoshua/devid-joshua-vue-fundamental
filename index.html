@@ -1,9 +1,44 @@
 <html>
     <head>
-        
+       <title>Cari text | Vue Fundamental</title>
     </head>
-    <body>
-    <header> </header>
-    <footer></footer>
-    </body>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <style>
+        .mb-5{
+            margin-bottom: 5px;
+        }
+    </style>
+<body>
+    <input type="text" class="mb-5" placeholder="Link youtube">
+    <div class="mb-5">
+        <input type="text" placeholder="Cari"> &nbsp; <button>Bersihkan</button>
+    </div>
+    <div class="mb-5">
+        <button>First</button>
+        <button>Prev</button>
+        <button>Next</button>
+        <button>Last</button>
+    </div>
+    <p class="mb-5">Total Hasil: - </p> 
+    <p class="mb-5">Halaman ke: - </p> 
+    <ul>
+        <li>anak memakan buaya</li>
+        <li>testo 123</li>
+    </ul>
+</body>
+      <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <!-- production version, optimized for size and speed -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="functions.js"></script>
+    <script>
+        console.log("nilai a= ",a)
+        var app = new Vue({
+            el: '#app',
+            data: {
+            message: 'Hello Vue!'
+            }
+        })
+    </script>
 </html>
