@@ -12,7 +12,7 @@
     <div id="app">
         <input type="text" class="mb-5" placeholder="Link youtube" v-model="url" >
         <div class="mb-5">
-            <input type="text" placeholder="Search here" v-model="query"> &nbsp; <button>Hapus</button>
+            <input type="text" placeholder="Search here" v-model="query"> &nbsp; <button @click="clear">Hapus</button>
         </div>
         
         <div class="mb-5">
@@ -150,10 +150,10 @@
                                 // if(this.pagination.page<1) this.pagination.page=this.pagination.total
                             break;
                             case 'last':
-                                this.pagination.page=1
+                                this.pagination.rpage=
                             break;
                             case 'first':
-                                this.pagination.page=this.pagination.total
+                                this.pagination.page=1
                             break;
                         }
                     },
