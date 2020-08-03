@@ -15,7 +15,7 @@
             <input type="text" placeholder="Search here" v-model="query"> &nbsp; <button @click="clear">Hapus</button>
         </div>
         
-        <div class="mb-5">
+        <div class="mb-5" v-if="data.length > 0">
             <label>Gunakan Paginasi</label>
             <input type="checkbox" v-model="isPaginated" true-value="1" false-value='0' >
         </div>
