@@ -9,36 +9,172 @@
         }
     </style>
 <body>
-    <input type="text" class="mb-5" placeholder="Link youtube">
-    <div class="mb-5">
-        <input type="text" placeholder="Cari"> &nbsp; <button>Bersihkan</button>
+    <div id="app">
+        <input type="text" class="mb-5" placeholder="Link youtube" v-model="url" >
+        <div class="mb-5">
+            <input type="text" placeholder="Search here" v-model="query"> &nbsp; <button>Hapus</button>
+        </div>
+        
+        <div class="mb-5">
+            <label>Gunakan Paginasi</label>
+            <input type="checkbox" v-model="isPaginated" true-value="1" false-value='0' >
+        </div>
+            
+       <div class="mb-5" v-if="isPaginated==1">
+            <div class="mb-5" v-if="data.length>0">
+                <label>Jumlah item yang akan ditampilkan</label>
+                <select v-model="pagination.size">
+                    <option value="" disabled selected>Pilih jumlah item</option>
+                    <option v-for="items in providedSize" :value="items">{{items}}</option>
+                </select>
+            </div>
+            <div class="mb-5">
+                <button @click="navigate('first')"  :disabled="!pagination.first">Awal</button>
+                <button @click="navigate('prev')"   :disabled="!pagination.prev">Sebelumnya</button>
+                <button @click="navigate('next')"   :disabled="!pagination.next">Selanjutnya</button>
+                <button @click="navigate('last')"   :disabled="!pagination.last">Akhir</button>
+            </div>
+            <p class="mb-5">Total Hasil: {{ pagination.total ? pagination.total : '-'}}</p> 
+            <p class="mb-5">Halaman ke: {{ pagination.page ? pagination.page : '-'}}</p> 
+
+       </div>
+       <br>
+        <div class="mb-5" v-if="data.length>0" checked>
+            <label>Gunakan Sorotan</label>
+            <input type="checkbox" v-model="isMarked" true-value="1" false-value='0'>
+        </div>
+       <br>
+       <div>
+            <ul>
+                <li v-for="dataTranscript in data">
+                    <span v-html="dataTranscript.text"></span>
+                    <a :href="`${url}&t=${dataTranscript.start}`">Youtube</a>
+                </li>
+            </ul>
+       </div>
     </div>
-    <div class="mb-5">
-        <button>First</button>
-        <button>Prev</button>
-        <button>Next</button>
-        <button>Last</button>
-    </div>
-    <p class="mb-5">Total Hasil: - </p> 
-    <p class="mb-5">Halaman ke: - </p> 
-    <ul>
-        <li>anak memakan buaya</li>
-        <li>testo 123</li>
-    </ul>
 </body>
       <!-- development version, includes helpful console warnings -->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> 
+    
     <!-- production version, optimized for size and speed -->
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="functions.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+    
+    <!-- debouncer -->
+    <script src="debounce.js"></script>
     <script>
-        console.log("nilai a= ",a)
         var app = new Vue({
-            el: '#app',
-            data: {
-            message: 'Hello Vue!'
-            }
-        })
+                el: '#app',
+                data: {
+                        url:'',
+                        query:'',
+                        url: 'https://www.youtube.com/watch?v=klnvttPfOUM',
+                        data: [],
+                        isPaginated:0,
+                        isMarked:1,
+                        providedSize:[5,10,15,20,25],
+                        pagination: {
+                            prev: null,
+                            next: null,
+                            total: 0,
+                            first: null,
+                            last: null,
+                            page: null,
+                            size:null,
+                        }
+                },
+                watch:{
+                    query:pDebounce(async function handlequery(query) {
+                            if (query && query.length >= 3) {
+                                await this.callAPI()
+                            } else {
+                                alert("The query must be at least 3 characters")
+                            }
+                        }, 250)
+                    ,
+                    isPaginated:function(){
+                        console.log("value>>",this.isPaginated)
+                        if(this.query)this.callAPI()
+                    },
+                    isMarked:function(){
+                        console.log("value>>",this.isPaginated)
+                        if(this.data.length > 0)this.callAPI()
+                    },
+                    'pagination.page':function(){
+                        this.callAPI()
+                    },
+                    'pagination.size':function(){
+                        this.callAPI()
+                    }
+                    
+                },
+                methods:{
+                    callAPI: async function(){
+                        let params=[]
+                        if(this.pagination.page>1&&this.isPaginated) await params.push(`&page=${this.pagination.page}`)
+                        if(this.isMarked) await params.push(`&marked=${this.isMarked}`)
+                        if(this.pagination.size>0) await params.push(`&size=${this.pagination.size}`)
+                        await params.push(`&paginated=${this.isPaginated}`)
+                        console.log("params>>>",params.join(""))
+
+                        const api_url=`https://cari-teks-video-api.vercel.app/api/search?url=${encodeURIComponent(this.url)}&q=${this.query}${await params.join("")}`
+                        
+                        console.log("api call url>>> ",api_url)
+                        try
+                        {
+                            const transcript = await fetch(api_url).then(res=> res.ok ? res.json() : [])
+                            console.log("response>>>",transcript)
+                            this.data=transcript.data
+                            this.pagination.total=transcript.total
+                            this.pagination.first=transcript.first
+                            this.pagination.last=transcript.last
+                            this.pagination.next=transcript.next
+                            this.pagination.prev=transcript.prev
+                            this.pagination.page=transcript.page
+                        }
+                        catch(err)
+                        {
+                            console.warn("error==>>",err)
+                        }
+                    },
+                    navigate: async function(type)
+                    {
+                        switch(type)
+                        {
+                            case 'next':
+                                await this.pagination.page++
+                                // if(this.pagination.page>this.pagination.total) this.pagination.page=1
+                            break;
+                            case 'prev':
+                                await this.pagination.page--
+                                // if(this.pagination.page<1) this.pagination.page=this.pagination.total
+                            break;
+                            case 'last':
+                                this.pagination.page=1
+                            break;
+                            case 'first':
+                                this.pagination.page=this.pagination.total
+                            break;
+                        }
+                    },
+                    checkbox:function(e){
+                        console.log("value>>",this.isPaginated)
+                    },
+                    clear:function(){
+                        this.query=''
+                        this.data= [],
+                        this.isPaginated=0
+                        this.isMarked=1
+                        this.pagination.prev=null
+                        this.pagination.next=null
+                        this.pagination.total=0
+                        this.pagination.first=null
+                        this.pagination.last=null
+                        this.pagination.page=null
+                        this.pagination.size=null
+                    }
+                }
+            })
+            
     </script>
 </html>
