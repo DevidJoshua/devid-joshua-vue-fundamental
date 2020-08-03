@@ -88,7 +88,11 @@
                             if (query && query.length >= 3) {
                                 await this.callAPI()
                             } else{
-                                if(query)alert("The query must be at least 3 characters")
+                                if(query)
+                                {
+                                    this.data=[]
+                                    alert("The query must be at least 3 characters")
+                                }
                             }
                         }, 250)
                     ,
