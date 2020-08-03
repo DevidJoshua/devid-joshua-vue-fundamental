@@ -87,8 +87,8 @@
                     query:pDebounce(async function handlequery(query) {
                             if (query && query.length >= 3) {
                                 await this.callAPI()
-                            } else {
-                                alert("The query must be at least 3 characters")
+                            } else{
+                                if(query)alert("The query must be at least 3 characters")
                             }
                         }, 250)
                     ,
@@ -101,10 +101,10 @@
                         if(this.data.length > 0)this.callAPI()
                     },
                     'pagination.page':function(){
-                        this.callAPI()
+                        if(this.pagination.page)this.callAPI()
                     },
                     'pagination.size':function(){
-                        this.callAPI()
+                        if(this.pagination.size)this.callAPI()
                     }
                     
                 },
@@ -150,7 +150,7 @@
                                 // if(this.pagination.page<1) this.pagination.page=this.pagination.total
                             break;
                             case 'last':
-                                this.pagination.rpage=
+                                this.pagination.page=1
                             break;
                             case 'first':
                                 this.pagination.page=1
