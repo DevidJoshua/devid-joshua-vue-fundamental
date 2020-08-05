@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/css-spinning-spinners/1.1.0/load5.css" />
     <link rel="stylesheet" href="index.css">
 <body>
-    <div id="app" class="container-fluid">
+    <div id="app" class="container h-100 mh-100 overflow-auto app">
         <!-- navbar -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <span class="fas fa-search navbar-brand"></span> <a class="navbar-brand font-weight-bold" href="#">Cari Teks App </a>
@@ -17,6 +17,7 @@
             <span class="navbar-brand">by&nbsp;&nbsp; <a style="color: yellow;" href="https://www.linkedin.com/in/devid-runtuwene-b623a7123/">Devid</a></span>
         </nav>
         <!-- navbar -->
+        <!-- section input -->
        <section class="section-form">
           <div class="container">
             <div class="form-group mt-5">
@@ -26,18 +27,19 @@
             <div class="col-auto">
                 <center><label>Kata kunci</label></center>
                 <div class="input-group">
-                    <input type="text" class="form-control form-control-lg text-center" placeholder="Cari kata" v-model="query">
+                    <input type="text" class="form-control form-control-lg text-center" placeholder="Cari kata" v-model="query" :disabled="!url">
             </div>
           </div>
        </section>
-
+       <!-- section input -->
+       <!-- section control -->
        <section class="section-control mt-5">
             <div class="container">
                 <button @click="clearAllResultAndPagination" class="btn btn-danger fa-pull-right" :disabled="!query"><span class="fas fa-trash navbar-brand"></span>Hapus kata kunci</button>
                 <div class="row">
                     <div class="custom-control custom-checkbox" v-if="data.length>0">
-                        <input type="checkbox" class="custom-control-input" id="customCheck1" v-model="isPaginated" true-value="1" false-value='0'>
-                        <label class="custom-control-label" for="customCheck1">Gunakan Paginasi</label>
+                        <input type="checkbox" class="custom-control-input" id="customCheck2" v-model="isPaginated" true-value="1" false-value='0'>
+                        <label class="custom-control-label" for="customCheck2">Gunakan Paginasi</label>
                     </div>
                     &nbsp;&nbsp;&nbsp;
                     <div v-if="isPaginated==1">
@@ -50,22 +52,23 @@
                     </div>
                 </div>
                 <div class="container">
-                    <div class="row" v-if="isPaginated==1">
-                        <div class="custom-control custom-checkbox"  v-if="data.length>0" checked> 
-                            <input type="checkbox" v-model="isMarked" class="custom-control-input" id="customCheck1" true-value="1" false-value='0'>
-                            <label class="custom-control-label" for="customCheck1">Gunakan Sorotan</label>
-                        </div>
-                        &nbsp;&nbsp;&nbsp;
-                        <div class="mb-5 input-group col-4 " v-if="data.length>0">
-                            <label>Tampilkan</label> 
-                            &nbsp;
-                            <select class="custom-select " v-model="pagination.size">
-                                <option v-for="items in providedSize" :value="items">{{items}}</option>
-                            </select>
-                            &nbsp;
-                            <label>Data</label> 
-                        </div>
+                <div class="row" v-if="isPaginated==1">
+                    <div class="custom-control custom-checkbox"  v-if="data.length>0" checked> 
+                        <input type="checkbox" v-model="isMarked" class="custom-control-input" id="customCheck1" true-value="1" false-value='0'>
+                        <label class="custom-control-label" for="customCheck1">Gunakan Sorotan</label>
                     </div>
+                    
+                    &nbsp;&nbsp;&nbsp;
+                    <div class="mb-5 input-group col-4 " v-if="data.length>0">
+                        <label>Tampilkan</label> 
+                        &nbsp;
+                        <select class="custom-select " v-model="pagination.size">
+                            <option v-for="items in providedSize" :value="items">{{items}}</option>
+                        </select>
+                        &nbsp;
+                        <label>Data</label> 
+                    </div>
+                </div>
                 </div>
             </div>
             <br>
@@ -75,38 +78,45 @@
             </div>
             <br>
        </section>
-       <div class="loading" v-if="isRequesting"></div>
-       <div class="mt-5">
-            <ul>
-                <li class="list-data" v-for="dataTranscript in data">
-                    <span v-html="dataTranscript.text"></span>
-                    <a :href="`${url}&t=${dataTranscript.start}`" class="btn btn-secondary">Youtube</a>
-                </li>
-                <br>
-            </ul>
-       </div>
+       <!-- section control -->
+       <!-- section result -->
+       <section>
+            <div class="loading" v-if="isRequesting"></div>
+            <div class="section-list">
+                <div class="mt-5">
+                    <ul>
+                        <li class="list-data" v-for="dataTranscript in data">
+                            <span v-html="dataTranscript.text"></span>
+                            <a :href="`${url}&t=${dataTranscript.start}`" class="btn btn-secondary">Youtube</a>
+                        </li>
+                        <br>
+                    </ul>
+                </div>
+            </div>
+       </section>
+       <!-- section result -->
     </div>
 </body>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/js/bootstrap.min.js" integrity="sha384-XEerZL0cuoUbHE4nZReLT7nx9gQrQreJekYhJD9WNWhH8nEW+0c5qq7aIo2Wl30J" crossorigin="anonymous"></script>
-      <!-- development version, includes helpful console warnings -->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/js/bootstrap.min.js" integrity="sha384-XEerZL0cuoUbHE4nZReLT7nx9gQrQreJekYhJD9WNWhH8nEW+0c5qq7aIo2Wl30J" crossorigin="anonymous"></script>
+    
+    <!-- development version, includes helpful console warnings -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>  -->
     
     <!-- production version, optimized for size and speed -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
-    
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
     <!-- debouncer -->
     <script src="debounce.js"></script>
+    
+    <!-- vue code  -->
     <script>
-        var mark = document.getElementsByTagName("mark"); 
-        mark.className += 'btn btn-secondary'
         var app = new Vue({
                 el: '#app',
                 data: {
-                    url:'',
                     query:'',
-                    url: 'https://www.youtube.com/watch?v=klnvttPfOUM',
+                    url: '',
                     data: [],
                     isRequesting:false,
                     isPaginated:0,
@@ -130,21 +140,16 @@
                                 if(query)
                                 {
                                     this.data=[]
-                                    alert("The query must be at least 3 characters")
                                 }
+                                this.clearAllResultAndPagination()
                             }
-                        }, 250)
+                        }, 400)
                     ,
                     isPaginated:function(){
-                        console.log("value>>",this.isPaginated)
                         if(this.query)this.callAPI()
                     },
                     isMarked:function(){
-                        console.log("value>>",this.isPaginated)
                         if(this.data.length > 0)this.callAPI()
-                    },
-                    'pagination.page':function(){
-                        if(this.pagination.page)this.callAPI()
                     },
                     'pagination.size':function(){
                         if(this.pagination.size)this.callAPI()
@@ -152,40 +157,54 @@
                     
                 },
                 methods:{
+                    validURL(str) {
+                        var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+                            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+                            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+                            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+                            '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+                            '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+                        return !!pattern.test(str);
+                    },
                     callAPI: async function(optional_url){
                         this.isRequesting=true
                         //Append custom params
                         let params=[]
-                        //
-                        if(this.pagination.page>1&&this.isPaginated) params.push(`&page=${this.pagination.page}`)
                         //Use or not use highlight
-                        if(this.isMarked) params.push(`&marked=${this.isMarked}`)
+                        if(this.isMarked) await params.push(`&marked=${this.isMarked}`)
                         //Use page size
-                        if(this.pagination.size>0)  params.push(`&size=${this.pagination.size}`)
+                        if(this.pagination.size>0)  await params.push(`&size=${this.pagination.size}`)
                         params.push(`&paginated=${this.isPaginated}`)
                         
                         let api_url=''
-                        if(!optional_url) api_url=`https://cari-teks-video-api.vercel.app/api/search?url=${encodeURIComponent(this.url)}&q=${this.query}${params.join("")}`
+                        if(!optional_url) api_url=`https://cari-teks-video-api.vercel.app/api/search?url=${encodeURIComponent(this.url)}&q=${this.query}${await params.join("")}`
                         else api_url=optional_url
-                        
-                        
-                        console.log("api call url>>> ",api_url)
-                        try
+                        if(this.validURL(this.url))
                         {
-                            const response = await fetch(api_url).then(res=> res.ok ? res.json() : [])
-                            this.data=response.output ? [] : response.data
-                            this.pagination.total=response.total||response.data.length
-                            this.pagination.first=response.first
-                            this.pagination.last=response.last
-                            this.pagination.next=response.next
-                            this.pagination.prev=response.prev
-                            this.pagination.page=response.page
-                            this.isRequesting=false
+                                try
+                                {
+                                    const response = await fetch(api_url).then(res=> res.ok ? res.json() : [])
+                                    console.log("response>>>>", response)
+                                    this.data=response.output ? [] : response.data
+                                    this.pagination.total=response.total||response.data.length
+                                    this.pagination.first=response.first
+                                    this.pagination.last=response.last
+                                    this.pagination.next=response.next
+                                    this.pagination.prev=response.prev
+                                    this.pagination.page=response.page
+                                    this.isRequesting=false
+                                    if(response.output) alert("Something error. try again") 
+                                }
+                                catch(err)
+                                {
+                                    this.isRequesting=false
+                                    alert("Something error try again")
+                                }
                         }
-                        catch(err)
+                        else
                         {
                             this.isRequesting=false
-                            console.warn("error==>>",err)
+                            alert("URL not valid please input other URL")
                         }
                     },
                     navigate: function(type)
@@ -202,7 +221,6 @@
                                 this.callAPI(this.pagination.last)
                             break;
                             case 'first':
-                                this.pagination.page=1
                                 this.callAPI(this.pagination.first)
                             break;
                         }
@@ -219,6 +237,7 @@
                         this.pagination.last=null
                         this.pagination.page=null
                         this.pagination.size=null
+                        this.isRequesting=false
                     }
                 }
             })

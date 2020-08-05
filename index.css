@@ -1,4 +1,17 @@
+body{
+  background: #D0E4F5 url("background.jpg") no-repeat fixed 0 0;
+
+}
+.app{
+  background: white;
+  -webkit-box-shadow: 0px 0px 29px -9px rgba(0,0,0,0.62);
+  -moz-box-shadow: 0px 0px 29px -9px rgba(0,0,0,0.62);
+  box-shadow: 0px 0px 29px -9px rgba(0,0,0,0.62);
+}
 .section-control{
+}
+.section-list{
+  margin-top: 5px;
 }
 .the-result{
     padding: 5px;
