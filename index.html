@@ -2,58 +2,94 @@
     <head>
        <title>Cari text | Vue Fundamental</title>
     </head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    <style>
-        .mb-5{
-            margin-bottom: 5px;
-        }
-    </style>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/v4-shims.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/css/bootstrap.min.css" integrity="sha384-VCmXjywReHh4PwowAiWNagnWcLhlEJLA5buUprzK8rxFgeH0kww/aWY76TfkUoSX" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/css-spinning-spinners/1.1.0/load5.css" />
+    <link rel="stylesheet" href="index.css">
 <body>
-    <div id="app">
-        <input type="text" class="mb-5" placeholder="Link youtube" v-model="url" >
-        <div class="mb-5">
-            <input type="text" placeholder="Search here" v-model="query"> &nbsp; <button @click="clear">Hapus</button>
-        </div>
-        
-        <div class="mb-5" v-if="data.length > 0">
-            <label>Gunakan Paginasi</label>
-            <input type="checkbox" v-model="isPaginated" true-value="1" false-value='0' >
-        </div>
-            
-       <div class="mb-5" v-if="isPaginated==1">
-            <div class="mb-5" v-if="data.length>0">
-                <label>Jumlah item yang akan ditampilkan</label>
-                <select v-model="pagination.size">
-                    <option value="" disabled selected>Pilih jumlah item</option>
-                    <option v-for="items in providedSize" :value="items">{{items}}</option>
-                </select>
+    <div id="app" class="container-fluid">
+        <!-- navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <span class="fas fa-search navbar-brand"></span> <a class="navbar-brand font-weight-bold" href="#">Cari Teks App </a>
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            </ul>
+            <span class="navbar-brand">by&nbsp;&nbsp; <a style="color: yellow;" href="https://www.linkedin.com/in/devid-runtuwene-b623a7123/">Devid</a></span>
+        </nav>
+        <!-- navbar -->
+       <section class="section-form">
+          <div class="container">
+            <div class="form-group mt-5">
+                <center><label>Link youtube</label></center>
+                <input type="text" class="form-control form-control-lg text-center" placeholder="Contoh:https://www.youtube.com/watch?v=klnvttPfOUM" v-model="url" >
             </div>
-            <div class="mb-5">
-                <button @click="navigate('first')"  :disabled="!pagination.first">Awal</button>
-                <button @click="navigate('prev')"   :disabled="!pagination.prev">Sebelumnya</button>
-                <button @click="navigate('next')"   :disabled="!pagination.next">Selanjutnya</button>
-                <button @click="navigate('last')"   :disabled="!pagination.last">Akhir</button>
+            <div class="col-auto">
+                <center><label>Kata kunci</label></center>
+                <div class="input-group">
+                    <input type="text" class="form-control form-control-lg text-center" placeholder="Cari kata" v-model="query">
             </div>
-            <p class="mb-5">Total Hasil: {{ pagination.total ? pagination.total : '-'}}</p> 
-            <p class="mb-5">Halaman ke: {{ pagination.page ? pagination.page : '-'}}</p> 
+          </div>
+       </section>
 
-       </div>
-       <br>
-        <div class="mb-5" v-if="data.length>0" checked>
-            <label>Gunakan Sorotan</label>
-            <input type="checkbox" v-model="isMarked" true-value="1" false-value='0'>
-        </div>
-       <br>
-       <div>
+       <section class="section-control mt-5">
+            <div class="container">
+                <button @click="clearAllResultAndPagination" class="btn btn-danger fa-pull-right" :disabled="!query"><span class="fas fa-trash navbar-brand"></span>Hapus kata kunci</button>
+                <div class="row">
+                    <div class="custom-control custom-checkbox" v-if="data.length>0">
+                        <input type="checkbox" class="custom-control-input" id="customCheck1" v-model="isPaginated" true-value="1" false-value='0'>
+                        <label class="custom-control-label" for="customCheck1">Gunakan Paginasi</label>
+                    </div>
+                    &nbsp;&nbsp;&nbsp;
+                    <div v-if="isPaginated==1">
+                        <div class="mb-5">
+                            <button @click="navigate('first')"  :disabled="!pagination.first" class="btn btn-warning"><span class="fas fa-home"></span>&nbsp;Awal</button>
+                            <button @click="navigate('prev')"   :disabled="!pagination.prev" class="btn btn-warning"><span class="fas fa-chevron-circle-left"></span>&nbsp;Sebelumnya</button>
+                            <button @click="navigate('next')"   :disabled="!pagination.next" class="btn btn-warning"><span class="fas fa-chevron-circle-right"></span>&nbsp;Selanjutnya</button>
+                            <button @click="navigate('last')"   :disabled="!pagination.last" class="btn btn-warning"><span class="fas fa-step-forward"></span>&nbsp;Akhir</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row" v-if="isPaginated==1">
+                        <div class="custom-control custom-checkbox"  v-if="data.length>0" checked> 
+                            <input type="checkbox" v-model="isMarked" class="custom-control-input" id="customCheck1" true-value="1" false-value='0'>
+                            <label class="custom-control-label" for="customCheck1">Gunakan Sorotan</label>
+                        </div>
+                        &nbsp;&nbsp;&nbsp;
+                        <div class="mb-5 input-group col-4 " v-if="data.length>0">
+                            <label>Tampilkan</label> 
+                            &nbsp;
+                            <select class="custom-select " v-model="pagination.size">
+                                <option v-for="items in providedSize" :value="items">{{items}}</option>
+                            </select>
+                            &nbsp;
+                            <label>Data</label> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="mt-5" v-if="data.length>0">
+                    <h4 class="the-result fa-pull-right">Total Hasil Pencarian: {{ pagination.total ? pagination.total : '-'}}</h4> 
+                    <h4 class="the result fa-pull-left" v-if="isPaginated">Halaman ke: {{ pagination.page ? pagination.page : '-'}}</h4> 
+            </div>
+            <br>
+       </section>
+       <div class="loading" v-if="isRequesting"></div>
+       <div class="mt-5">
             <ul>
-                <li v-for="dataTranscript in data">
+                <li class="list-data" v-for="dataTranscript in data">
                     <span v-html="dataTranscript.text"></span>
-                    <a :href="`${url}&t=${dataTranscript.start}`">Youtube</a>
+                    <a :href="`${url}&t=${dataTranscript.start}`" class="btn btn-secondary">Youtube</a>
                 </li>
+                <br>
             </ul>
        </div>
     </div>
 </body>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/js/bootstrap.min.js" integrity="sha384-XEerZL0cuoUbHE4nZReLT7nx9gQrQreJekYhJD9WNWhH8nEW+0c5qq7aIo2Wl30J" crossorigin="anonymous"></script>
       <!-- development version, includes helpful console warnings -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> 
     
@@ -63,28 +99,31 @@
     <!-- debouncer -->
     <script src="debounce.js"></script>
     <script>
+        var mark = document.getElementsByTagName("mark"); 
+        mark.className += 'btn btn-secondary'
         var app = new Vue({
                 el: '#app',
                 data: {
-                        url:'',
-                        query:'',
-                        url: 'https://www.youtube.com/watch?v=klnvttPfOUM',
-                        data: [],
-                        isPaginated:0,
-                        isMarked:1,
-                        providedSize:[5,10,15,20,25],
-                        pagination: {
-                            prev: null,
-                            next: null,
-                            total: 0,
-                            first: null,
-                            last: null,
-                            page: null,
-                            size:null,
-                        }
+                    url:'',
+                    query:'',
+                    url: 'https://www.youtube.com/watch?v=klnvttPfOUM',
+                    data: [],
+                    isRequesting:false,
+                    isPaginated:0,
+                    isMarked:1,
+                    providedSize:[5,10,15,20,25],
+                    pagination: {
+                        prev: null,
+                        next: null,
+                        total: 0,
+                        first: null,
+                        last: null,
+                        page: null,
+                        size:null,
+                    }
                 },
                 watch:{
-                    query:pDebounce(async function handlequery(query) {
+                    query:pDebounce(async function handleQuery(query) {
                             if (query && query.length >= 3) {
                                 await this.callAPI()
                             } else{
@@ -113,58 +152,62 @@
                     
                 },
                 methods:{
-                    callAPI: async function(){
+                    callAPI: async function(optional_url){
+                        this.isRequesting=true
+                        //Append custom params
                         let params=[]
-                        if(this.pagination.page>1&&this.isPaginated) await params.push(`&page=${this.pagination.page}`)
-                        if(this.isMarked) await params.push(`&marked=${this.isMarked}`)
-                        if(this.pagination.size>0) await params.push(`&size=${this.pagination.size}`)
-                        await params.push(`&paginated=${this.isPaginated}`)
-                        console.log("params>>>",params.join(""))
-
-                        const api_url=`https://cari-teks-video-api.vercel.app/api/search?url=${encodeURIComponent(this.url)}&q=${this.query}${await params.join("")}`
+                        //
+                        if(this.pagination.page>1&&this.isPaginated) params.push(`&page=${this.pagination.page}`)
+                        //Use or not use highlight
+                        if(this.isMarked) params.push(`&marked=${this.isMarked}`)
+                        //Use page size
+                        if(this.pagination.size>0)  params.push(`&size=${this.pagination.size}`)
+                        params.push(`&paginated=${this.isPaginated}`)
+                        
+                        let api_url=''
+                        if(!optional_url) api_url=`https://cari-teks-video-api.vercel.app/api/search?url=${encodeURIComponent(this.url)}&q=${this.query}${params.join("")}`
+                        else api_url=optional_url
+                        
                         
                         console.log("api call url>>> ",api_url)
                         try
                         {
-                            const transcript = await fetch(api_url).then(res=> res.ok ? res.json() : [])
-                            console.log("response>>>",transcript)
-                            this.data=transcript.data
-                            this.pagination.total=transcript.total
-                            this.pagination.first=transcript.first
-                            this.pagination.last=transcript.last
-                            this.pagination.next=transcript.next
-                            this.pagination.prev=transcript.prev
-                            this.pagination.page=transcript.page
+                            const response = await fetch(api_url).then(res=> res.ok ? res.json() : [])
+                            this.data=response.output ? [] : response.data
+                            this.pagination.total=response.total||response.data.length
+                            this.pagination.first=response.first
+                            this.pagination.last=response.last
+                            this.pagination.next=response.next
+                            this.pagination.prev=response.prev
+                            this.pagination.page=response.page
+                            this.isRequesting=false
                         }
                         catch(err)
                         {
+                            this.isRequesting=false
                             console.warn("error==>>",err)
                         }
                     },
-                    navigate: async function(type)
+                    navigate: function(type)
                     {
                         switch(type)
                         {
                             case 'next':
-                                await this.pagination.page++
-                                // if(this.pagination.page>this.pagination.total) this.pagination.page=1
+                                this.callAPI(this.pagination.next)
                             break;
                             case 'prev':
-                                await this.pagination.page--
-                                // if(this.pagination.page<1) this.pagination.page=this.pagination.total
+                                this.callAPI(this.pagination.prev)
                             break;
                             case 'last':
-                                this.pagination.page=1
+                                this.callAPI(this.pagination.last)
                             break;
                             case 'first':
                                 this.pagination.page=1
+                                this.callAPI(this.pagination.first)
                             break;
                         }
                     },
-                    checkbox:function(e){
-                        console.log("value>>",this.isPaginated)
-                    },
-                    clear:function(){
+                    clearAllResultAndPagination:function(){
                         this.query=''
                         this.data= [],
                         this.isPaginated=0
