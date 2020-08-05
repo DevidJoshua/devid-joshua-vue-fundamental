@@ -133,6 +133,9 @@
                     }
                 },
                 watch:{
+                    url:function (){
+                        if(!this.isValidURL(this.url)) this.clearAllResultAndPagination()
+                    },
                     query:pDebounce(async function handleQuery(query) {
                             if (query && query.length >= 3) {
                                 await this.callAPI()
@@ -157,7 +160,7 @@
                     
                 },
                 methods:{
-                    validURL(str) {
+                    isValidURL(str) {
                         var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
                             '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
                             '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
@@ -179,7 +182,7 @@
                         let api_url=''
                         if(!optional_url) api_url=`https://cari-teks-video-api.vercel.app/api/search?url=${encodeURIComponent(this.url)}&q=${this.query}${await params.join("")}`
                         else api_url=optional_url
-                        if(this.validURL(this.url))
+                        if(this.isValidURL(this.url))
                         {
                                 try
                                 {
