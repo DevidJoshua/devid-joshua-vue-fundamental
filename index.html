@@ -74,7 +74,7 @@
             <br>
             <div class="mt-5" v-if="data.length>0">
                     <h4 class="the-result fa-pull-right">Total Hasil Pencarian: {{ pagination.total ? pagination.total : '-'}}</h4> 
-                    <h4 class="the result fa-pull-left" v-if="isPaginated">Halaman ke: {{ pagination.page ? pagination.page : '-'}}</h4> 
+                    <h4 class="the result fa-pull-left" v-show="isPaginated==1">Halaman ke: {{ pagination.page ? pagination.page : '-'}}</h4> 
             </div>
             <br>
        </section>
