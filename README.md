@@ -8,7 +8,7 @@ for the depoyed version you can access it in
 
 To run locally, open `index.html` in your browser (Chrome, Mozilla Firefox, etc). Make sure you have internet connection.
 ## About the project 
-This project is a searching app that search text from a youtube video that has transcript
+This project is a searching app that search text from a youtube video subtitles
 
 ## How to use
 - Open `index.html` on the browser
